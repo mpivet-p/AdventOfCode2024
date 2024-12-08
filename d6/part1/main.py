@@ -1,13 +1,17 @@
-def main():
-
+def load_map(filename):
   map = []
 
-  with open("input.txt", "r") as file:
+  with open(filename, "r") as file:
     for line in file:
       map.append(list(line.strip()))
       if "^" in line:
         x = line.index("^")
         y = len(map) - 1
+  return map, x, y
+
+def main():
+
+  map, x, y = load_map("input.txt")
 
   visited = set()
   drn = 0
@@ -28,7 +32,6 @@ def main():
     else:
       y = next_y
       x = next_x
-
 
   print(f"{len(visited)=}")
 

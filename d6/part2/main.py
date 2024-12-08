@@ -1,5 +1,16 @@
 directions = [(-1, 0), (0, 1), (1, 0), (0, -1)]
 
+def load_map(filename):
+  map = []
+
+  with open(filename, "r") as file:
+    for line in file:
+      map.append(list(line.strip()))
+      if "^" in line:
+        x = line.index("^")
+        y = len(map) - 1
+  return map, x, y
+
 def is_loop(map, x, y):
   visited = set()
   drn = 0
@@ -25,16 +36,7 @@ def is_loop(map, x, y):
   return False
 
 def main():
-
-  map = []
-
-  with open("input.txt", "r") as file:
-    for line in file:
-      map.append(list(line.strip()))
-      if "^" in line:
-        x = line.index("^")
-        y = len(map) - 1
-
+  map, x, y = load_map("test-input.txt")
   count = 0
 
   for i in range(len(map)):
