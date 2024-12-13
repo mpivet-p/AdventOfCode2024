@@ -21,6 +21,7 @@ def checksum(disk):
         count += 1
         disk[i] -= 1
 
+
   return result
 
 def main():
