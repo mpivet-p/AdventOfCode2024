@@ -9,9 +9,6 @@ solutions = []
 directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
 costs = {}
 
-# def display(memory):
-#   print("\n".join(["".join(["." if c == 0 else "#" for c in row]) for row in memory]))
-
 def solve(maze, pos, visited):
   if tuple(pos) == (limit, limit):
     solutions.append((len(visited), visited))
@@ -30,7 +27,7 @@ def solve(maze, pos, visited):
 def main():
   memory = np.zeros((map_size, map_size))
   with open("input.txt", "r") as file:
-    size = 1024
+    size = 1051
     for line in file:
       if size == 0:
         break
@@ -38,7 +35,6 @@ def main():
       memory[y, x] += 1
       size -= 1
 
-  # display(memory)
   costs[(0, 0)] = 0
   solve(memory, np.array((0, 0)), set())
   print(sorted([sol[0] for sol in solutions]))
