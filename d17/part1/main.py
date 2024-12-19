@@ -45,7 +45,7 @@ def main():
       registers[r[0]] = int(r[1])
     program = [int(i) for i in re.findall(r"Program: (.*)$", content)[0].split(",")]
 
-  print(registers, program, instruction_pointer)
+  print(registers, program)
   instr_set = [adv, bxl, bst, jnz, bxc, out, bdv, cdv]
 
   while instruction_pointer < len(program) - 1:
