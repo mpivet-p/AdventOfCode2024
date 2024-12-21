@@ -1,9 +1,7 @@
 import numpy as np
 import sys
 
-costs = {}
 solutions = []
-cheat_stn = []
 dirs = [(0, 1), (1, 0), (0, -1), (-1, 0)]
 
 def solve(map, pos, visited):
@@ -28,13 +26,13 @@ def cheats(solution):
   possible_cheats = []
 
   for pos in solution:
-    pts = manhattan_radius(pos, 20)
-    for pt in pts:
-      manhattan_distance = abs(pos[0] - pt[0]) + abs(pos[1] - pt[1])
-      if tuple(pt) in solution and solution[tuple(pt)] > solution[tuple(pos)]:
-        dist = max(solution[tuple(pt)], solution[tuple(pos)]) - min(solution[tuple(pt)], solution[tuple(pos)])
-        if dist > manhattan_distance:
-          possible_cheats.append((dist - manhattan_distance, tuple(pos), tuple(pt)))
+    for pt in solution:
+      if tuple(pos) != tuple(pt):
+        manhattan_distance = abs(pos[0] - pt[0]) + abs(pos[1] - pt[1])
+        if manhattan_distance < 20 and tuple(pt) in solution and solution[tuple(pt)] > solution[tuple(pos)]:
+          dist = solution[tuple(pt)] - solution[tuple(pos)]
+          if dist > manhattan_distance:
+            possible_cheats.append((dist - manhattan_distance, tuple(pos), tuple(pt)))
 
   return possible_cheats
 
@@ -70,7 +68,7 @@ def main():
   print(f"Reference: {ref}")
 
   possible_cheats = sorted([n[0] for n in possible_cheats])
-  # print(sum([1 if pc >= 99 else 0 for pc in possible_cheats]))
+  # print(sum([1 if pc >= 100 else 0 for pc in possible_cheats]))
 
 
   cheats_ = {}
