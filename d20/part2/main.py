@@ -35,19 +35,6 @@ def cheats(solution):
             possible_cheats.append((dist - manhattan_distance, tuple(pos), tuple(pt)))
 
   return possible_cheats
-
-def manhattan_radius(pos, radius):
-  x_range = np.arange(pos[1] - radius, pos[1] + radius + 1)
-  y_range = np.arange(pos[0] - radius, pos[0] + radius + 1)
-  x ,y = np.meshgrid(x_range, y_range)
-
-  m_dist = np.abs(x - pos[0]) + np.abs(y - pos[1])
-
-  mask = m_dist <= radius
-  valid_x = x[mask]
-  valid_y = y[mask]
-
-  return np.column_stack((valid_y, valid_x))
   
 def main():
   sys.setrecursionlimit(10000)
@@ -76,10 +63,6 @@ def main():
     if n not in cheats_ and n >= 50:
       cheats_[n] = possible_cheats.count(n)
       print(f"{n:3} -> {cheats_[n]}")
-
-  # for n in range(len(possible_cheats)):
-  #   # if possible_cheats[n][0] == 3:
-  #   print(possible_cheats[n])
 
 if __name__ == "__main__":
   main()
