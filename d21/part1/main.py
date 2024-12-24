@@ -1,4 +1,5 @@
 import numpy as np
+from itertools import product
 
 main_kbd = np.array([
   ["7", "8", "9"],
@@ -12,11 +13,11 @@ sec_kbd = np.array([
   ["<", "v", ">"]
 ])
 
-def shortest_sequence(kbd, sequence):
-  ptr =   np.argwhere(kbd == "A")[0]
-  instructions = []
+directions = {">": (0, 1), "^": (-1, 0), "v": (1, 0), "<": (0, -1), "A": (0, 0)}
 
-  empty = np.argwhere(kbd==None)[0]
+def shortest_sequence(kbd, sequence):
+  ptr = np.argwhere(kbd == "A")[0]
+  instructions = []
 
   for c in sequence:
     tgt = np.argwhere(kbd == c)[0]
@@ -24,51 +25,52 @@ def shortest_sequence(kbd, sequence):
     y = "^" * abs(diff[0]) if diff[0] < 0 else "v" * diff[0]
     x = "<" * abs(diff[1]) if diff[1] < 0 else ">" * diff[1]
 
-    if tgt[1] == empty[1] and empty[0] == ptr[0]:
-      instructions.append(y + x)
-    elif tgt[0] == empty[0] and empty[0] == ptr[0]:
-      instructions.append(x + y)
-    else:
-      instructions.append((x, y) if x != "" and y != "" else x + y)
+    tmp = []
+    moves = []
+    permutations(moves, "", x, y)
+    for t in moves:
+      pos = ptr.copy()
+      possible = True
 
-    instructions.append("A")
+      for ins in t[:-1]:
+        pos += directions[ins]
+        if kbd[tuple(pos)] == None:
+          possible = False
+          break
+      if possible:
+        tmp.append(t)
+    
+    instructions.append(tmp)
     ptr = tgt
 
-  return instructions
+  return ["".join(x) for x in product(*instructions)]
 
-def expand_seq(result, string, sequence):
-  if len(sequence) == 0:
-    result.append(string)
-  elif type(sequence[0]) is not tuple:
-    expand_seq(result, string + sequence[0], sequence[1:])
+def permutations(result, string, a, b):
+  if len(a) == 0:
+    result.append(string + b + "A")
+  elif len(b) == 0:
+    result.append(string + a + "A")
   else:
-    expand_seq(result, string + sequence[0][0] + sequence[0][1], sequence[1:])
-    expand_seq(result, string + sequence[0][1] + sequence[0][0], sequence[1:])
+    permutations(result, string + a[0], a[1:], b)
+    permutations(result, string + b[0], a, b[1:])
 
 def main():
   with open("input.txt", "r") as file:
-    codes = file.read().strip().split("\n")#[0:1]
+    codes = file.read().strip().split("\n")
 
   result = 0
   for co in codes:
-    dir_keypad1 = []
-    dir_keypad2 = []
+    numpad = shortest_sequence(main_kbd, co)
 
-    num_keypad = shortest_sequence(main_kbd, co)
-    print(num_keypad)
+    keypad1 = []
+    for num in numpad:
+      keypad1 += shortest_sequence(sec_kbd, num)
+    
+    keypad2 = []
+    for kp1 in keypad1:
+      keypad2 += shortest_sequence(sec_kbd, kp1)
 
-    num = []
-    expand_seq(num, "", num_keypad)
-
-    for n1 in num:
-      dir1 = shortest_sequence(sec_kbd, n1)
-      expand_seq(dir_keypad1, "", dir1)
-
-    for d1 in dir_keypad1:
-      dir2 = shortest_sequence(sec_kbd, d1)
-      expand_seq(dir_keypad2, "", dir2)
-
-    result += len(sorted(dir_keypad2, key=len)[0]) * int(co[:3])
+    result += len(sorted(keypad2, key=len)[0]) * int(co[:3])
 
   print(result)
 
