@@ -20,7 +20,6 @@ def generate_secret(n):
   for i in range(2000):
     n = mult2(div(mult(n)))
     nbrs.append(n)
-
   return np.array(nbrs)
 
 def get_price_evolutions(price_evo, base):
